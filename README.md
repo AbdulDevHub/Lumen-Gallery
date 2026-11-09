@@ -1,155 +1,132 @@
-# 🖼️ Gallery Viewer – Chrome Extension
+<div align="center">
 
-A powerful, offline-first **image & video gallery viewer** built as a custom Chrome extension.
+<img src="icons/icon.svg" alt="Lumen Gallery logo" width="88" height="88" />
 
-![Gallery View](Screenshots/Screenshot%201.png)
+# Lumen Gallery: A Private, Offline Image & Video Folder Viewer
 
-Designed for quickly browsing large image sets or folders, previewing video frames, and navigating visually with speed and precision.
+**Open a whole folder of images, GIFs and videos and browse it in a fast, private gallery that runs in your browser.**
+Reopen recent folders in one click and pick up exactly where you stopped.
 
----
+[![Open the web app](https://img.shields.io/badge/Open_the_web_app-f3c669?style=for-the-badge&logo=googlechrome&logoColor=221705&labelColor=f3c669)](https://abduldevhub.github.io/Lumen-Gallery/)
+[![Download the extension](https://img.shields.io/badge/Download_the_extension-1e1c1a?style=for-the-badge&logo=googlechrome&logoColor=f3c669)](https://github.com/AbdulDevHub/Lumen-Gallery/releases/latest)
 
-## ✨ Features
+[![Release](https://img.shields.io/github/v/release/AbdulDevHub/Lumen-Gallery?color=f3c669&labelColor=1e1c1a)](https://github.com/AbdulDevHub/Lumen-Gallery/releases)
+[![License: MIT](https://img.shields.io/badge/license-MIT-f3c669?labelColor=1e1c1a)](LICENSE)
+![Manifest V3](https://img.shields.io/badge/Chrome-Manifest_V3-f3c669?labelColor=1e1c1a)
+![No dependencies](https://img.shields.io/badge/runtime_dependencies-0-f3c669?labelColor=1e1c1a)
 
-### 📂 File & Folder Support
+<img src="assets/screenshots/start.png" alt="Lumen Gallery start screen with recent folders and a library of folders" width="900" />
 
-- Load **individual images or videos**
-- Load **entire folders** (recursive)
-- Natural filename sorting (handles numbers correctly)
-- Offline — everything runs locally in your browser
+</div>
 
-### 🎞️ Video Frame Extraction
+## Project Overview
 
-- Automatically extracts **multiple preview frames** from videos
-- Frames are evenly distributed across the video duration
-- Useful for quick content review or reference browsing
+Lumen Gallery is an image viewer for people who keep pictures in folders on their computer. You point it at a folder and it shows everything inside as a grid you can scroll, zoom and flip through. It never uploads anything: the browser reads the files straight from your disk.
 
-### 🧱 Flexible Grid Layout
+It started as a Chrome extension I built for myself. Version 2 adds two things I kept wishing for. First, it remembers the folders you open, so getting back to one is a single click and it offers to resume at the image where you stopped. Second, it stays smooth with folders of thousands of images. Images far off-screen are released from memory, every tile is sized from the file header before it loads, and GIFs only animate when you hover them, so a wall of GIFs no longer slows the computer down.
 
-- Switch between **24 / 12 / 6 / 3 / 2 / 1 images per row**
-- Adjustable container width (zoom in / out)
-- Toggle grid gaps on/off
-- Optional **actual-width mode** for single-image rows
+The same files ship two ways. GitHub Pages serves them as a website you can install as an offline app, and the same code is packaged as a Chrome extension. There's no build step and no runtime dependencies, just HTML, CSS and JavaScript modules.
 
-### 🔍 Advanced Viewing Experience
+## Features
 
-- Fullscreen overlay viewer
-- Three zoom modes:
-  - Off
-  - Click-to-zoom
-  - Live magnifying lens
-- Auto sizing based on image orientation
-- 80% width or full-width viewing modes
+| | |
+| --- | --- |
+| **Recent folders** | Reopen any folder you've viewed in one click. Cards show a thumbnail, how far you got and when you last opened it. |
+| **Resume where you left off** | Your position is saved as you scroll. When you reopen a folder you get a *Resume at 37* button. <kbd>B</kbd> pins a page on purpose. |
+| **Library** | Point it at a parent folder to see every sub-folder with its progress, then jump between neighbouring folders with <kbd>[</kbd> and <kbd>]</kbd>. |
+| **Built for huge folders** | Thousands of images load in seconds and scroll smoothly. Memory stays flat, and jumping to image 3,000 lands exactly. |
+| **Calm GIFs** | GIFs show a still frame in the grid and play on hover or in the viewer. You can change this in Settings. |
+| **Flexible grid** | 1, 2, 3, 6, 12 or 24 images per row, adjustable width, gaps on/off, and natural or fill width. Your layout is remembered. |
+| **Focused viewer** | Auto sizing for tall and panoramic images, click-to-zoom, a magnifying lens, a thumbnail strip, an image info panel and swipe gestures. |
+| **Hands-free** | A slideshow with adjustable speed, and smooth auto-scroll (<kbd>A</kbd>) for long folders. |
+| **Organise as you browse** | Favourites (<kbd>L</kbd>), filter by file name (<kbd>/</kbd>), sort by name, date or size, or shuffle. |
+| **Videos** | Videos become evenly spaced preview frames that you can browse like images. |
+| **Private and offline** | No uploads, accounts or analytics. Works without a connection. |
+| **Install anywhere** | Use it as a website, install it as an app (it can open images straight from your OS), or add the Chrome extension (<kbd>Alt</kbd>+<kbd>G</kbd>). |
 
-### 📌 Bookmarks (Folder Mode)
+## Screenshots
 
-- Save your last viewed image per folder
-- Automatically resumes from where you left off
+| Grid | Viewer |
+| --- | --- |
+| <img src="assets/screenshots/grid.png" alt="Three-per-row grid of landscape images" /> | <img src="assets/screenshots/viewer.png" alt="Full-screen viewer with info panel and thumbnail strip" /> |
 
-### 🎲 Productivity Tools
+<img src="assets/screenshots/shortcuts.png" alt="Settings and help panel showing keyboard shortcuts" width="720" />
 
-- Randomize image order
-- Keyboard shortcuts for fast navigation
-- Horizontal scroll → vertical scroll remapping
-- Spotlight mode (hide UI for distraction-free viewing)
+## Get it
 
----
+### Use the web app
 
-## 🖥️ Screenshots
+Open **[abduldevhub.github.io/Lumen-Gallery](https://abduldevhub.github.io/Lumen-Gallery/)**. To install it as an offline app, click the install icon in Chrome or Edge's address bar.
 
-### Main Gallery View
+### Install the Chrome extension
 
-![Gallery View](Screenshots/Screenshot%201.png)
+1. Download `lumen-gallery-extension.zip` from the [latest release](https://github.com/AbdulDevHub/Lumen-Gallery/releases/latest) and unzip it.
+2. Open `chrome://extensions` and turn on **Developer mode** (top right).
+3. Click **Load unpacked** and select the unzipped folder.
 
-### Overlay Image Viewer
+Open it from the toolbar icon or with <kbd>Alt</kbd>+<kbd>G</kbd>.
 
-![Overlay Viewer](Screenshots/Screenshot%202.png)
-
-### Zoom & Controls
-
-![Zoom Features](Screenshots/Screenshot%203.png)
-
----
-
-## ⌨️ Keyboard Shortcuts
+## Keyboard shortcuts
 
 | Key | Action |
 | --- | --- |
-| `←` / `→` | Previous / Next image |
-| `E` | Close overlay |
-| `Z` | Toggle zoom mode |
-| `R` | Randomize images |
-| `G` | Toggle grid gaps |
-| `H` | Toggle spotlight mode |
-| `F` | Toggle fullscreen |
-| `S` | Save bookmark (folder mode) |
-| `+` / `-` | Increase / decrease grid width |
+| <kbd>←</kbd> / <kbd>→</kbd> | Previous / next image (opens the viewer) |
+| <kbd>X</kbd> or <kbd>Esc</kbd> | Close the viewer |
+| <kbd>R</kbd> | Switch between full width and auto size |
+| <kbd>Z</kbd> | Cycle zoom: off → click to zoom → magnifying lens |
+| <kbd>S</kbd> | Shuffle on / off |
+| <kbd>G</kbd> | Toggle gaps between images |
+| <kbd>H</kbd> | Spotlight: hide the toolbar |
+| <kbd>F</kbd> | Fullscreen |
+| <kbd>B</kbd> | Pin the current page of this folder |
+| <kbd>+</kbd> / <kbd>-</kbd> | Widen / narrow the grid |
+| <kbd>P</kbd> | Slideshow |
+| <kbd>I</kbd> | Image info |
+| <kbd>L</kbd> | Favourite the current image |
+| <kbd>A</kbd> | Auto-scroll (<kbd>,</kbd> / <kbd>.</kbd> slower / faster) |
+| <kbd>[</kbd> / <kbd>]</kbd> | Previous / next folder in your Library |
+| <kbd>/</kbd> | Filter by file name |
+| <kbd>O</kbd> | Open a folder |
+| <kbd>?</kbd> | Shortcuts, features and FAQ |
 
----
+Move the mouse to the left edge to reveal the side controls, or to the bottom edge in the viewer to show the thumbnail strip.
 
-## 🚀 Installation (Developer Mode)
+## Privacy
 
-1. Clone or download this repository
-2. Open Chrome and navigate to:
+Everything happens on your device. Files are read with standard browser APIs and never leave your computer. Recent folders, progress and favourites are stored in your browser's own storage (IndexedDB), and you can wipe them from **Settings → Forget recent folders & progress**.
 
-```txt
-chrome://extensions
+## Browser support
+
+Everything works in current Chrome, Edge, Firefox and Safari. **Recent folders** and the **Library** use the [File System Access API](https://developer.mozilla.org/docs/Web/API/File_System_API), which only Chromium browsers (Chrome, Edge, Opera, Brave) have. In other browsers you pick the folder each time, but your progress is still remembered.
+
+## Development
+
+No build step: the files in this repo *are* the app.
+
+```sh
+npm install
+npx playwright install chromium   # once
+npm run serve                     # http://localhost:4173/
+npm test                          # generates test images, runs the Playwright suite
+npm run package                   # dist/site (GitHub Pages) + dist/extension (zip)
+npm run shots                     # regenerates screenshots + social images (generated art only)
 ```
 
-1. Enable **Developer Mode** (top-right)
-2. Click **Load unpacked**
-3. Select the project folder
-
-You can open the extension via:
-
-- Chrome toolbar icon
-- Keyboard shortcut: **Alt + G**
-
----
-
-## 🛠️ Tech Stack
-
-- Vanilla **HTML / CSS / JavaScript**
-- Chrome Extensions **Manifest V3**
-- No external dependencies
-- Fully offline-capable
-
----
-
-## 📁 Project Structure
+Pushing to `main` deploys the site to GitHub Pages. Pushing a `v*` tag builds the extension zip and attaches it to a GitHub Release.
 
 ```txt
-Gallery Viewer
-├── index.html
-├── manifest.json
-├── scripts/
-│   ├── main.js
-│   ├── background.js
-│   └── materialize.js
-├── styles/
-│   ├── main.css
-│   └── effects.css
-├── icons/
-├── Screenshots/
-└── LICENSE
+Lumen-Gallery
+├── index.html            # the whole app (and the SEO/landing content)
+├── src/                  # ES modules: grid, viewer, library, files, settings, …
+├── styles/               # main, loader and effects CSS
+├── icons/ assets/        # logo, icons, font, screenshots, OG image
+├── manifest.json         # Chrome extension (MV3)
+├── background.js         # opens the gallery from the toolbar / Alt+G
+├── site.webmanifest sw.js robots.txt sitemap.xml 404.html   # web app only
+├── tests/  tools/        # Playwright tests, fixture/screenshot/packaging scripts
+└── .github/workflows/    # Pages deploy + release zip
 ```
 
----
+## License
 
-## 👤 Author
-
-**Abdul Hadi Khan**
-
----
-
-## 📄 License
-
-This project is licensed under the terms of the **MIT License**.  
-See the `LICENSE` file for details.
-
----
-
-## ⭐ Notes
-
-This extension was built to handle **large galleries efficiently**, provide **fast visual navigation**, and stay completely local for privacy and performance.
-
-Feel free to fork, modify, or extend it 🚀
+[MIT](LICENSE) © Abdul Hadi Khan. Includes the [Inter](https://rsms.me/inter/) typeface (SIL OFL) and [Lucide](https://lucide.dev) icons (ISC).
