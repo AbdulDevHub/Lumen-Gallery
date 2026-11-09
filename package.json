@@ -1,0 +1,19 @@
+{
+  "name": "lumen-gallery",
+  "version": "2.0.0",
+  "private": true,
+  "description": "Private, offline image & video folder viewer — web app and Chrome extension.",
+  "type": "module",
+  "scripts": {
+    "serve": "node tools/serve.mjs",
+    "fixtures": "node tools/make-fixtures.mjs",
+    "test": "node tools/make-fixtures.mjs && playwright test",
+    "package": "node tools/package.mjs",
+    "icons": "node tools/make-icons.mjs",
+    "shots": "node tools/make-shots.mjs"
+  },
+  "devDependencies": {
+    "@playwright/test": "1.65.0"
+  },
+  "license": "MIT"
+}
