@@ -1,0 +1,4 @@
+User-agent: *
+Allow: /
+
+Sitemap: https://abduldevhub.github.io/Lumen-Gallery/sitemap.xml
