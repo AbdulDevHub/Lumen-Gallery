@@ -1,141 +1,48 @@
-/*----------------Text Selection----------*/
+/* Selection, scrollbars and the button ripple. */
+
 ::selection {
-  background: #f3c669; /* WebKit/Blink Browsers */
-  color: #ffffff;
+  background: #f3c669;
+  color: #221705;
 }
 
-::-moz-selection {
-  background: #f3c669; /* Gecko Browsers */
-  color: #ffffff;
-}
-
-::-ms-selection {
-  background: #f3c669; /* IE 10+ */
-  color: #ffffff;
-}
-
-/*----------------Scrollbar----------*/
 ::-webkit-scrollbar {
   width: 10px;
   height: 10px;
-  transition: 1s;
 }
-
 ::-webkit-scrollbar-thumb {
-  background-color: rgba(127, 127, 127, 0.6);
+  background-color: rgba(127, 127, 127, 0.55);
   background-clip: padding-box;
   border: 2px solid transparent;
   border-radius: 5px;
-  transition: 1s;
 }
-
-::-webkit-scrollbar-thumb:vertical:hover,
-::-webkit-scrollbar-thumb:horizontal:hover {
-  background-color: rgb(110, 110, 110);
-  transition: 0.3s;
+::-webkit-scrollbar-thumb:hover {
+  background-color: rgb(120, 116, 108);
 }
-
-::-webkit-scrollbar-track {
-  background-color: transparent;
+::-webkit-scrollbar-thumb:active {
+  background-color: rgb(150, 140, 120);
 }
-
-::-webkit-scrollbar-thumb:vertical:active,
-::-webkit-scrollbar-thumb:horizontal:active {
-  background: rgba(95, 91, 91, 1);
-}
-
+::-webkit-scrollbar-track,
 ::-webkit-scrollbar-corner {
-  background: none;
+  background: transparent;
 }
 
-/*---------------- Materialize CSS ------------*/
-/*!
-   * Waves v0.6.0
-   * http://fian.my.id/Waves
-   *
-   * Copyright 2014 Alfiana E. Sibuea and other contributors
-   * Released under the MIT license
-   * https://github.com/fians/Waves/blob/master/LICENSE
-   */
-.waves-effect {
-  position: relative;
-  cursor: pointer;
-  overflow: hidden;
-  -webkit-user-select: none;
-  -moz-user-select: none;
-  -ms-user-select: none;
-  user-select: none;
-  -webkit-tap-highlight-color: transparent;
-  vertical-align: middle;
-  z-index: 1;
-  -webkit-transition: 0.3s ease-out;
-  transition: 0.3s ease-out;
-}
-
-.waves-effect .waves-ripple {
+/* Ripple (see setupRipple in src/ui.js) */
+.ripple {
   position: absolute;
   border-radius: 50%;
-  width: 20px;
-  height: 20px;
-  margin-top: -10px;
-  margin-left: -10px;
-  opacity: 0;
-  background: rgba(0, 0, 0, 0.2);
-  -webkit-transition: all 0.7s ease-out;
-  transition: all 0.7s ease-out;
-  -webkit-transition-property: opacity, -webkit-transform;
-  transition-property: opacity, -webkit-transform;
-  transition-property: transform, opacity;
-  transition-property: transform, opacity, -webkit-transform;
-  -webkit-transform: scale(0);
+  background: rgba(255, 255, 255, 0.35);
   transform: scale(0);
+  opacity: 1;
   pointer-events: none;
+  animation: ripple 0.55s ease-out forwards;
 }
-
-.waves-effect.waves-light .waves-ripple {
-  background-color: rgba(255, 255, 255, 0.45);
+.btn-primary .ripple,
+.fab .ripple {
+  background: rgba(255, 255, 255, 0.55);
 }
-
-.waves-effect.waves-red .waves-ripple {
-  background-color: rgba(244, 67, 54, 0.7);
-}
-
-.waves-effect.waves-yellow .waves-ripple {
-  background-color: rgba(255, 235, 59, 0.7);
-}
-
-.waves-effect.waves-orange .waves-ripple {
-  background-color: rgba(255, 152, 0, 0.7);
-}
-
-.waves-effect.waves-purple .waves-ripple {
-  background-color: rgba(156, 39, 176, 0.7);
-}
-
-.waves-effect.waves-green .waves-ripple {
-  background-color: rgba(76, 175, 80, 0.7);
-}
-
-.waves-effect.waves-teal .waves-ripple {
-  background-color: rgba(0, 150, 136, 0.7);
-}
-
-.waves-effect input[type="button"],
-.waves-effect input[type="reset"],
-.waves-effect input[type="submit"] {
-  border: 0;
-  font-style: normal;
-  font-size: inherit;
-  text-transform: inherit;
-  background: none;
-}
-
-.waves-effect img {
-  position: relative;
-  z-index: -1;
-}
-
-/* Firefox Bug: link not triggered */
-.waves-effect .waves-ripple {
-  z-index: -1;
+@keyframes ripple {
+  to {
+    transform: scale(1);
+    opacity: 0;
+  }
 }
