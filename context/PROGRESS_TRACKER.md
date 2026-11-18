@@ -29,7 +29,8 @@ entry to the session log (newest first). Collapse stale entries into "Earlier hi
   Follow-up 3: image-less folders hidden from Library, folder menu and [ ]; condensed dialog; custom sort/folder menus; Clear removed. Tests: hardened slideshow and pin tests; folder tests can time out at 6 workers on a busy machine.
   Follow-up 4: favourites-only button moved beside Shuffle; Settings "Buttons to show" toggles (favourites only, shuffle, hide toolbar, zoom, favourite, info, slideshow; settings keys btn*, applied by applyOptionalButtons in settings.js); info panel has a gold outline.
   Follow-up 5: toolbar order search → folder nav → sort; viewer side menu kept as flex (was display:block, collapsing gaps); filmstrip reserves thumb widths and centres the current image; images-per-row number centred.
-  Follow-up 6: side menus slimmed (54px, 40px buttons); prev / folder / next joined into one segmented control (.folder-nav).
+  Follow-up 6: side menus: original size and position, solid 2px gold outline with a soft shadow so it reads over busy images (66px wide to keep button padding), less rounded (22px); prev / folder / next joined into one segmented control (.folder-nav).
+  Follow-up 7: drop zone fills the free height while there are no recent folders.
   Note: another project's http-server sometimes holds port 4173, and `reuseExistingServer` then runs the tests against it (all time out). Stop it or run Playwright with a copied config on another port.
 - 2026-11-09: v2 upgrade. Modular rewrite (src/), performance work (4000 files: ~15 s → ~2 s to first grid), Recents/Library/resume,
   reading and browsing tools, visual refresh, PWA + SEO, README, Pages and release workflows, repo renamed to Lumen-Gallery.
