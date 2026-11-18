@@ -52,6 +52,26 @@ export async function subdirectories(dirHandle) {
   return dirs.sort(byName)
 }
 
+/** The first still image (by natural name order) directly inside a folder, for cover thumbnails. */
+export async function coverFile(dirHandle) {
+  let still = null
+  let gif = null
+  for await (const entry of dirHandle.values()) {
+    if (entry.kind !== "file" || !IMAGE_EXT.test(entry.name) || /\.svg$/i.test(entry.name)) continue
+    if (/\.gif$/i.test(entry.name)) {
+      if (!gif || byName(entry, gif) < 0) gif = entry
+    } else if (!still || byName(entry, still) < 0) still = entry
+  }
+  const pick = still || gif
+  return pick ? pick.getFile() : null
+}
+
+/** True when a folder directly holds at least one image (stops at the first one). */
+export async function hasImage(dirHandle) {
+  for await (const entry of dirHandle.values()) if (entry.kind === "file" && IMAGE_EXT.test(entry.name)) return true
+  return false
+}
+
 /** Files from <input webkitdirectory>: keep only files directly inside the chosen folder. */
 export function filesFromFolderInput(fileList) {
   const files = [...fileList].filter((f) => f.webkitRelativePath.split("/").length === 2)

@@ -25,6 +25,7 @@ const SHELL = [
   "src/ui.js",
   "src/shortcuts.js",
   "src/pwa.js",
+  "src/menu.js",
 ]
 
 self.addEventListener("install", (event) => {

@@ -1,7 +1,7 @@
 // Lumen Gallery entry point: wires the toolbar, file loading, view options and shortcuts.
 
 import { state, $, on, emit, GRID_STEPS, isOverlayOpen } from "./state.js"
-import { settings, saveSettings, DEFAULTS } from "./settings.js"
+import { settings, saveSettings, DEFAULTS, applyOptionalButtons, OPTIONAL_BUTTONS } from "./settings.js"
 import * as grid from "./grid.js"
 import * as viewer from "./viewer.js"
 import * as library from "./library.js"
@@ -10,6 +10,7 @@ import { buildItems, sniffSizes, filesFromFolderInput, isImage, isVideo, collato
 import { toast, loader, setupRipple, openDialog, bindSettingsForm } from "./ui.js"
 import { setupShortcuts } from "./shortcuts.js"
 import { setupPwa } from "./pwa.js"
+import { attachMenu } from "./menu.js"
 
 const body = document.body
 
@@ -86,7 +87,10 @@ function clearAll({ quiet = false } = {}) {
   $("favOnlyBtn").classList.remove("selectedGridOption")
   grid.render()
   updateChrome()
-  if (!quiet) library.renderRecents()
+  if (!quiet) {
+    library.renderRecents()
+    library.renderLibrary()
+  }
 }
 
 // ---------------------------------------------------------------------------
@@ -102,6 +106,7 @@ function refreshView() {
   if (state.isRandomized) view = [...view].sort((a, b) => a.rank - b.rank)
   else if (state.sort === "date") view = [...view].sort((a, b) => a.lastModified - b.lastModified || collator.compare(a.name, b.name))
   else if (state.sort === "size") view = [...view].sort((a, b) => b.size - a.size)
+  if (state.reverse && !state.isRandomized) view = [...view].reverse()
   state.view = view
   if (state.currentIndex >= view.length) state.currentIndex = 0
   if (state.currentIndex === -1 && view.length) state.currentIndex = 0
@@ -148,10 +153,27 @@ $("favOnlyBtn").addEventListener("click", () => {
   if (state.favOnly && !state.favs.size) toast("No favourites yet. Press L on an image to add one.")
   refreshView()
 })
-$("sortSelect").addEventListener("change", (e) => {
-  state.sort = e.target.value
-  if (state.isRandomized) toggleRandomize()
-  else refreshView()
+const SORTS = { name: "Name", date: "Date modified", size: "File size" }
+attachMenu($("sortBtn"), {
+  label: "Sort order",
+  getItems: () => [
+    ...Object.entries(SORTS).map(([value, label]) => ({ label, value, kind: "radio", checked: !state.isRandomized && state.sort === value })),
+    { separator: true },
+    { label: "Reverse order", value: "reverse", kind: "check", checked: state.reverse },
+  ],
+  onPick: ({ value }) => {
+    if (value === "reverse") state.reverse = !state.reverse
+    else state.sort = value
+    $("sortLabel").textContent = SORTS[state.sort]
+    $("sortBtn").classList.toggle("is-reversed", state.reverse)
+    if (state.isRandomized) toggleRandomize()
+    else refreshView()
+  },
+})
+attachMenu($("folderChip"), {
+  label: "Folders",
+  getItems: library.folderMenuItems,
+  onPick: (item) => item.run(),
 })
 
 // ---------------------------------------------------------------------------
@@ -205,9 +227,10 @@ $("folderInput").addEventListener("change", (e) => {
 })
 
 $("openFolderBtn").addEventListener("click", library.pickFolder)
-$("startOpenFolder").addEventListener("click", library.pickFolder)
+$("dropzone").addEventListener("click", library.pickFolder)
+$("libraryUp").addEventListener("click", () => library.scrollLibrary(-1))
+$("libraryDown").addEventListener("click", () => library.scrollLibrary(1))
 $("chooseLibraryBtn").addEventListener("click", library.chooseLibrary)
-$("clearAll").addEventListener("click", () => clearAll())
 $("randomize").addEventListener("click", toggleRandomize)
 $("gridToggle").addEventListener("click", grid.cycleGrid)
 $("zoomIn").addEventListener("click", () => grid.changeContainerWidth(10))
@@ -221,12 +244,13 @@ $("fullScreen").addEventListener("click", toggleFullScreen)
 $("mainFullScreen").addEventListener("click", toggleFullScreen)
 $("saveBtn").addEventListener("click", () => library.pinCurrent(state.currentIndex, $("saveBtn")))
 $("settingsBtn").addEventListener("click", () => openDialog("settings"))
-$("openHelpBtn").addEventListener("click", () => openDialog("shortcuts"))
 $("prevFolderBtn").addEventListener("click", () => library.siblingFolder(-1))
 $("nextFolderBtn").addEventListener("click", () => library.siblingFolder(1))
 $("brandHome").addEventListener("click", (e) => {
   e.preventDefault()
-  window.scrollTo({ top: 0, behavior: "smooth" })
+  // Back to the start screen. Progress is already auto-saved per folder.
+  if (state.items.length) clearAll()
+  window.scrollTo({ top: 0 })
 })
 $("forgetRecentsBtn").addEventListener("click", () =>
   toast("Forget all recent folders, progress and favourites?", {
@@ -314,7 +338,9 @@ function setupHorizontalScrollRemapper() {
     (e) => {
       if (!isOverlayOpen() && Math.abs(e.deltaX) > Math.abs(e.deltaY)) {
         e.preventDefault()
-        window.scrollBy(0, e.deltaX)
+        // Start-screen panels (Recents, Library) scroll on their own; the page itself does not.
+        const panel = e.target.closest?.("#recentList, #libraryList")
+        ;(panel || window).scrollBy(0, e.deltaX)
       }
     },
     { passive: false },
@@ -487,7 +513,9 @@ async function init() {
     if (key === "background") applyBackground()
     if (key === "cursorHideMs") resetIdle()
     if (key === "rememberLayout" && settings.rememberLayout) emit("layout")
+    if (key in OPTIONAL_BUTTONS) applyOptionalButtons()
   })
+  applyOptionalButtons()
   setupPwa((files) => loadFiles(files))
   updateChrome()
   await library.migrateLegacyBookmarks()

@@ -4,7 +4,7 @@
 import { state, $, emit, on } from "./state.js"
 import { settings, storageGet, storageSet } from "./settings.js"
 import { db, updateFolder } from "./db.js"
-import { filesFromDirectory, subdirectories } from "./files.js"
+import { filesFromDirectory, subdirectories, coverFile, hasImage, pool } from "./files.js"
 import { toast, timeAgo } from "./ui.js"
 
 export const canPickDirectories = () => typeof window.showDirectoryPicker === "function"
@@ -194,16 +194,21 @@ export async function toggleFavourite(index) {
 // Thumbnails for Recent cards
 // ---------------------------------------------------------------------------
 
+/** A small webp cover (360px wide, top 270px) made from an image file. */
+async function makeThumb(file) {
+  const bitmap = await createImageBitmap(file, { resizeWidth: 360, resizeQuality: "medium" })
+  const canvas = document.createElement("canvas")
+  canvas.width = bitmap.width
+  canvas.height = Math.min(bitmap.height, 270)
+  canvas.getContext("2d").drawImage(bitmap, 0, 0)
+  bitmap.close()
+  return new Promise((r) => canvas.toBlob(r, "image/webp", 0.8))
+}
+
 async function saveThumbnail(folderName, item) {
   if (!item) return
   try {
-    const bitmap = await createImageBitmap(item.file, { resizeWidth: 360, resizeQuality: "medium" })
-    const canvas = document.createElement("canvas")
-    canvas.width = bitmap.width
-    canvas.height = Math.min(bitmap.height, 270)
-    canvas.getContext("2d").drawImage(bitmap, 0, 0)
-    bitmap.close()
-    const thumb = await new Promise((r) => canvas.toBlob(r, "image/webp", 0.8))
+    const thumb = await makeThumb(item.file)
     if (thumb) await updateFolder(folderName, { thumb })
     renderRecents()
   } catch {
@@ -308,9 +313,10 @@ export async function renderLibrary({ request = false } = {}) {
   if (section.hidden) return
   const root = await db.get("kv", "libraryRoot")
   const hint = $("libraryHint")
-  $("chooseLibraryBtn").textContent = root ? "Change" : "Choose library folder"
+  $("chooseLibraryBtn").textContent = root ? "Change" : "Choose folder"
   $("libraryName").textContent = root ? root.name : "Library"
   list.replaceChildren()
+  updateLibraryArrows()
   if (!root) {
     hint.hidden = false
     return
@@ -330,34 +336,137 @@ export async function renderLibrary({ request = false } = {}) {
 
   const [dirs, records] = await Promise.all([subdirectories(root), db.all("folders")])
   const progress = new Map(records.map((r) => [r.name, r]))
+  libraryThumbUrls.forEach((u) => URL.revokeObjectURL(u))
+  libraryThumbUrls = []
+  coverObserver.disconnect()
+  pendingCovers.clear()
   list.replaceChildren(
     ...dirs.map((dir) => {
       const rec = progress.get(dir.name)
       const btn = document.createElement("button")
       btn.className = "folder-card"
       btn.title = `Open “${dir.name}”`
+      const thumb = document.createElement("span")
+      thumb.className = "folder-thumb"
+      if (rec?.thumb) {
+        const url = URL.createObjectURL(rec.thumb)
+        libraryThumbUrls.push(url)
+        thumb.style.backgroundImage = `url("${url}")`
+      } else {
+        thumb.innerHTML = '<svg class="icon icon-lg"><use href="#i-folder" /></svg>'
+        pendingCovers.set(btn, dir)
+        coverObserver.observe(btn)
+      }
+      const row = document.createElement("span")
+      row.className = "folder-meta"
       const label = document.createElement("span")
+      label.className = "folder-name"
       label.textContent = dir.name
-      btn.innerHTML = '<svg class="icon"><use href="#i-folder" /></svg>'
-      btn.append(label)
+      row.append(label)
       if (rec?.count) {
         const pct = document.createElement("small")
         const p = Math.min(1, ((rec.index || 0) + 1) / rec.count)
         pct.textContent = p >= 0.999 ? "done" : `${Math.round(p * 100)}%`
-        btn.append(pct)
+        row.append(pct)
         btn.classList.toggle("is-done", p >= 0.999)
         btn.classList.add("is-started")
       }
+      btn.append(thumb, row)
       btn.addEventListener("click", () => openDirectory(dir, { parent: root }))
       return btn
     }),
   )
+  updateLibraryArrows()
 }
+
+let libraryThumbUrls = []
+
+// Covers for Library folders that were never opened: made lazily as cards scroll into view,
+// a couple at a time, and cached in the folder's record so the next visit is instant.
+/** Library folders known to hold no images (found while making covers). */
+export const emptyFolders = new Set()
+/** Library folders known to hold images. */
+const withImages = new Set()
+const pendingCovers = new Map() // card button -> directory handle
+const coverQueue = []
+let coversInFlight = 0
+const coverObserver = new IntersectionObserver(
+  (entries) => {
+    for (const entry of entries) {
+      if (!entry.isIntersecting || !pendingCovers.has(entry.target)) continue
+      coverObserver.unobserve(entry.target)
+      coverQueue.push(entry.target)
+    }
+    pumpCovers()
+  },
+  { root: $("libraryList"), rootMargin: "300px 0px" },
+)
+
+function pumpCovers() {
+  while (coversInFlight < 2 && coverQueue.length) {
+    const card = coverQueue.shift()
+    const dir = pendingCovers.get(card)
+    if (!dir) continue
+    pendingCovers.delete(card)
+    coversInFlight++
+    loadCover(card, dir).finally(() => {
+      coversInFlight--
+      pumpCovers()
+    })
+  }
+}
+
+async function loadCover(card, dir) {
+  try {
+    const file = await coverFile(dir)
+    if (!file) {
+      // Nothing to preview: leave it out of the Library (and out of [ ] / the folder menu).
+      emptyFolders.add(dir.name)
+      card.remove()
+      updateLibraryArrows()
+      return
+    }
+    withImages.add(dir.name)
+    const thumb = await makeThumb(file)
+    if (!thumb) return
+    await updateFolder(dir.name, { thumb })
+    if (!card.isConnected) return
+    const url = URL.createObjectURL(thumb)
+    libraryThumbUrls.push(url)
+    const box = card.querySelector(".folder-thumb")
+    box.replaceChildren()
+    box.style.backgroundImage = `url("${url}")`
+  } catch {
+    /* covers are optional */
+  }
+}
+
+/** Scrolls the Library column by most of its visible height (-1 up, +1 down). */
+export function scrollLibrary(direction) {
+  const list = $("libraryList")
+  list.scrollBy({ top: direction * list.clientHeight * 0.85, behavior: "smooth" })
+}
+
+function updateLibraryArrows() {
+  const list = $("libraryList")
+  const overflow = list.scrollHeight > list.clientHeight + 1
+  $("libraryUp").hidden = $("libraryDown").hidden = !overflow
+  $("libraryUp").disabled = list.scrollTop <= 0
+  $("libraryDown").disabled = list.scrollTop + list.clientHeight >= list.scrollHeight - 1
+}
+$("libraryList").addEventListener("scroll", updateLibraryArrows, { passive: true })
+window.addEventListener("resize", updateLibraryArrows)
 
 const escapeHtml = (s) => s.replace(/[&<>"']/g, (c) => `&#${c.charCodeAt(0)};`)
 
 // While a folder is still loading, further [ / ] presses count from it, not the old one.
 let pendingFolder = null
+
+/** Sub-folders of a Library root, minus ones known to have no images (the open one always stays). */
+export async function libraryFolders(parent) {
+  const current = state.folder?.name
+  return (await subdirectories(parent)).filter((d) => d.name === current || !emptyFolders.has(d.name))
+}
 
 /** Previous (-1) / next (+1) sibling folder within the Library root. */
 export async function siblingFolder(direction) {
@@ -371,7 +480,7 @@ export async function siblingFolder(direction) {
     return
   }
   if (!(await ensureReadPermission(parent))) return
-  const dirs = await subdirectories(parent)
+  const dirs = await libraryFolders(parent)
   const index = dirs.findIndex((d) => d.name === (pendingFolder || state.folder.name))
   const target = dirs[index + direction]
   if (!target) {
@@ -415,3 +524,33 @@ export async function forgetEverything() {
 }
 
 on("toggle-fav", (index) => toggleFavourite(index))
+
+/** Items for the toolbar's folder menu: Library siblings when inside the Library, else recent folders. */
+export async function folderMenuItems() {
+  const current = state.folder?.name
+  const parent = state.folder?.parent
+  if (parent && (await ensureReadPermission(parent))) {
+    const all = await libraryFolders(parent)
+    // Check folders the Library column has not looked at yet, so empty ones never show up here.
+    const keep = new Array(all.length).fill(true)
+    await pool(all, 8, async (dir, i) => {
+      if (dir.name === current || withImages.has(dir.name)) return
+      if (await hasImage(dir).catch(() => true)) withImages.add(dir.name)
+      else {
+        emptyFolders.add(dir.name)
+        keep[i] = false
+      }
+    })
+    const dirs = all.filter((_, i) => keep[i])
+    return [
+      { heading: parent.name },
+      ...dirs.map((dir) => ({ label: dir.name, kind: "radio", checked: dir.name === current, run: () => openDirectory(dir, { parent }) })),
+    ]
+  }
+  const records = (await db.all("folders")).filter((r) => r.handle && r.lastOpened).sort((a, b) => b.lastOpened - a.lastOpened)
+  if (!records.length) return [{ heading: "No other folders yet" }]
+  return [
+    { heading: "Recent folders" },
+    ...records.slice(0, 30).map((r) => ({ label: r.name, kind: "radio", checked: r.name === current, hint: timeAgo(r.lastOpened), run: () => openDirectory(r.handle) })),
+  ]
+}

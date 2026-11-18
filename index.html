@@ -3,7 +3,7 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Lumen Gallery – Private Offline Image &amp; Video Folder Viewer</title>
+    <title>Lumen Gallery</title>
     <meta
       name="description"
       content="Open whole folders of images, GIFs and videos in a fast, private gallery that runs in your browser. Reopen recent folders and resume where you left off."
@@ -77,41 +77,6 @@
               "Smooth with thousands of images and GIFs",
               "Works offline, nothing is uploaded"
             ]
-          },
-          {
-            "@type": "FAQPage",
-            "mainEntity": [
-              {
-                "@type": "Question",
-                "name": "Are my images uploaded anywhere?",
-                "acceptedAnswer": { "@type": "Answer", "text": "No. Your browser reads the files directly from your device. Nothing is uploaded, there are no accounts and no analytics." }
-              },
-              {
-                "@type": "Question",
-                "name": "Does Lumen Gallery work offline?",
-                "acceptedAnswer": { "@type": "Answer", "text": "Yes. Install it as an app from your browser's address bar, or use the Chrome extension, and it works without an internet connection." }
-              },
-              {
-                "@type": "Question",
-                "name": "How do I reopen a folder I viewed before?",
-                "acceptedAnswer": { "@type": "Answer", "text": "Open a folder once with Open folder and it appears under Recent folders. Click it to reopen and continue from where you stopped. Your browser asks once for permission to read the folder." }
-              },
-              {
-                "@type": "Question",
-                "name": "Can it handle very large folders?",
-                "acceptedAnswer": { "@type": "Answer", "text": "Yes. Folders with thousands of images stay smooth because only images near the screen are kept in memory, and GIFs only play when you hover them (you can change this in Settings)." }
-              },
-              {
-                "@type": "Question",
-                "name": "Which file formats are supported?",
-                "acceptedAnswer": { "@type": "Answer", "text": "Any image your browser can display, including JPEG, PNG, GIF, WebP, AVIF, BMP and SVG. Videos such as MP4 and WebM are shown as evenly spaced preview frames." }
-              },
-              {
-                "@type": "Question",
-                "name": "Which browsers are supported?",
-                "acceptedAnswer": { "@type": "Answer", "text": "All modern browsers. Recent folders and the Library use the File System Access API, available in Chrome, Edge, Opera, Brave and other Chromium-based browsers." }
-              }
-            ]
           }
         ]
       }
@@ -132,6 +97,9 @@
       <symbol id="i-minimize" viewBox="0 0 24 24"><path d="M8 3v3a2 2 0 0 1-2 2H3"/><path d="M21 8h-3a2 2 0 0 1-2-2V3"/><path d="M3 16h3a2 2 0 0 1 2 2v3"/><path d="M16 21v-3a2 2 0 0 1 2-2h3"/></symbol>
       <symbol id="i-settings" viewBox="0 0 24 24"><path d="M9.671 4.136a2.34 2.34 0 0 1 4.659 0 2.34 2.34 0 0 0 3.319 1.915 2.34 2.34 0 0 1 2.33 4.033 2.34 2.34 0 0 0 0 3.831 2.34 2.34 0 0 1-2.33 4.033 2.34 2.34 0 0 0-3.319 1.915 2.34 2.34 0 0 1-4.659 0 2.34 2.34 0 0 0-3.32-1.915 2.34 2.34 0 0 1-2.33-4.033 2.34 2.34 0 0 0 0-3.831A2.34 2.34 0 0 1 6.35 6.051a2.34 2.34 0 0 0 3.319-1.915"/><circle cx="12" cy="12" r="3"/></symbol>
       <symbol id="i-chevron-left" viewBox="0 0 24 24"><path d="m15 18-6-6 6-6"/></symbol>
+      <symbol id="i-check" viewBox="0 0 24 24"><path d="M20 6 9 17l-5-5"/></symbol>
+      <symbol id="i-chevron-up" viewBox="0 0 24 24"><path d="m18 15-6-6-6 6"/></symbol>
+      <symbol id="i-chevron-down" viewBox="0 0 24 24"><path d="m6 9 6 6 6-6"/></symbol>
       <symbol id="i-chevron-right" viewBox="0 0 24 24"><path d="m9 18 6-6-6-6"/></symbol>
       <symbol id="i-arrow-up" viewBox="0 0 24 24"><path d="m5 12 7-7 7 7"/><path d="M12 19V5"/></symbol>
       <symbol id="i-search" viewBox="0 0 24 24"><path d="m21 21-4.34-4.34"/><circle cx="11" cy="11" r="8"/></symbol>
@@ -187,9 +155,8 @@
 
     <header id="buttonContainer" class="topbar">
       <div class="bar-group">
-        <a class="brand" href="#" id="brandHome" title="Lumen Gallery – back to start">
-          <img src="icons/icon.svg" alt="" width="30" height="30" />
-          <span>Lumen</span>
+        <a class="brand" href="#" id="brandHome" title="Back to start">
+          <img src="icons/icon.svg" alt="Lumen Gallery" width="40" height="40" />
         </a>
         <label for="fileInput" class="btn btn-primary" title="Add image or video files">
           <svg class="icon"><use href="#i-images" /></svg><span>Add Files</span>
@@ -199,49 +166,49 @@
           <svg class="icon"><use href="#i-folder-open" /></svg><span>Add Folder</span>
         </button>
         <input type="file" id="folderInput" webkitdirectory directory multiple />
-        <button id="clearAll" class="btn btn-danger" title="Clear all loaded images">
-          <svg class="icon"><use href="#i-trash-2" /></svg><span>Clear</span>
-        </button>
       </div>
 
       <div class="bar-group folder-tools" id="folderTools">
-        <button class="icon-btn" id="prevFolderBtn" title="Previous folder ([)">
-          <svg class="icon"><use href="#i-chevron-left" /></svg>
-        </button>
-        <div class="folder-chip" id="folderChip" title="Current folder">
-          <svg class="icon"><use href="#i-folder" /></svg>
-          <span id="folderName">Files</span>
-          <span class="count" id="folderCount">0</span>
-        </div>
-        <button class="icon-btn" id="nextFolderBtn" title="Next folder (])">
-          <svg class="icon"><use href="#i-chevron-right" /></svg>
-        </button>
         <label class="search" title="Filter by file name (/)">
           <svg class="icon"><use href="#i-search" /></svg>
           <input id="filterInput" type="search" placeholder="Filter…" aria-label="Filter by file name" />
         </label>
-        <button class="icon-btn" id="favOnlyBtn" title="Show favourites only">
-          <svg class="icon"><use href="#i-star" /></svg>
+        <div class="folder-nav">
+        <button class="icon-btn" id="prevFolderBtn" title="Previous folder ([)">
+          <svg class="icon"><use href="#i-chevron-left" /></svg>
         </button>
-        <select id="sortSelect" class="select" title="Sort order" aria-label="Sort order">
-          <option value="name">Name</option>
-          <option value="date">Date modified</option>
-          <option value="size">File size</option>
-        </select>
+        <button type="button" class="folder-chip" id="folderChip" title="Pick a folder" aria-haspopup="menu" aria-expanded="false">
+          <svg class="icon"><use href="#i-folder" /></svg>
+          <span id="folderName">Files</span>
+          <span class="count" id="folderCount">0</span>
+          <svg class="icon chevron"><use href="#i-chevron-down" /></svg>
+        </button>
+        <button class="icon-btn" id="nextFolderBtn" title="Next folder (])">
+          <svg class="icon"><use href="#i-chevron-right" /></svg>
+        </button>
+        </div>
+        <button type="button" class="select-btn" id="sortBtn" title="Sort order" aria-haspopup="menu" aria-expanded="false">
+          <svg class="icon"><use href="#i-arrow-down-a-z" /></svg>
+          <span id="sortLabel">Name</span>
+          <svg class="icon chevron"><use href="#i-chevron-down" /></svg>
+        </button>
       </div>
 
       <div class="bar-group">
-        <button id="gridToggle" class="icon-btn selectedGridOption grid-count" title="Images per row">1</button>
-        <button id="zoomIn" class="icon-btn" title="Increase grid width (+)">
+        <button id="gridToggle" class="icon-btn gallery-only selectedGridOption grid-count" title="Images per row">1</button>
+        <button id="zoomIn" class="icon-btn gallery-only" title="Increase grid width (+)">
           <svg class="icon"><use href="#i-plus" /></svg>
         </button>
-        <button id="zoomOut" class="icon-btn" title="Decrease grid width (-)">
+        <button id="zoomOut" class="icon-btn gallery-only" title="Decrease grid width (-)">
           <svg class="icon"><use href="#i-minus" /></svg>
         </button>
-        <button id="randomize" class="icon-btn" title="Shuffle image order (S)">
+        <button class="icon-btn gallery-only" id="favOnlyBtn" title="Show favourites only">
+          <svg class="icon"><use href="#i-star" /></svg>
+        </button>
+        <button id="randomize" class="icon-btn gallery-only" title="Shuffle image order (S)">
           <svg class="icon"><use href="#i-dices" /></svg>
         </button>
-        <button id="spotlight" class="icon-btn" title="Hide toolbar (H)">
+        <button id="spotlight" class="icon-btn gallery-only" title="Hide toolbar (H)">
           <svg class="icon"><use href="#i-lightbulb" /></svg>
         </button>
         <button id="fullScreen" class="icon-btn" title="Toggle fullscreen (F)">
@@ -256,58 +223,39 @@
     <main id="main">
       <section id="startScreen" class="start" aria-labelledby="startTitle">
         <div class="aurora" aria-hidden="true"><i></i><i></i><i></i></div>
-        <div class="hero">
-          <img class="hero-logo" src="icons/icon.svg" alt="" width="72" height="72" />
-          <h1 id="startTitle"><span>Lumen</span> Gallery</h1>
-          <p class="tagline">A private, offline gallery for your image folders.</p>
-        </div>
+        <h1 id="startTitle" class="sr-only">Lumen Gallery: a private, offline gallery for your image folders</h1>
 
-        <div class="dropzone" id="dropzone">
-          <svg class="icon icon-xl"><use href="#i-folder-open" /></svg>
-          <p class="dz-title">Drop a folder or images here</p>
-          <div class="dz-actions">
-            <button class="btn btn-primary btn-lg" id="startOpenFolder">
-              <svg class="icon"><use href="#i-folder-open" /></svg><span>Open folder</span>
-            </button>
-            <label for="fileInput" class="btn btn-ghost btn-lg">
-              <svg class="icon"><use href="#i-images" /></svg><span>Add files</span>
-            </label>
-          </div>
-          <ul class="chips">
-            <li><svg class="icon"><use href="#i-shield-check" /></svg>Nothing uploaded</li>
-            <li><svg class="icon"><use href="#i-wifi-off" /></svg>Works offline</li>
-            <li><svg class="icon"><use href="#i-sparkles" /></svg>Smooth with thousands of images</li>
-          </ul>
-        </div>
-
-        <section class="shelf" id="recentSection" hidden aria-labelledby="recentTitle">
-          <div class="shelf-head">
-            <h2 id="recentTitle"><svg class="icon"><use href="#i-history" /></svg>Continue where you left off</h2>
-          </div>
-          <div class="cards" id="recentList"></div>
-        </section>
-
-        <section class="shelf" id="librarySection" hidden aria-labelledby="libraryTitle">
-          <div class="shelf-head">
+        <aside class="library-rail" id="librarySection" hidden aria-labelledby="libraryTitle">
+          <div class="rail-head">
             <h2 id="libraryTitle"><svg class="icon"><use href="#i-library-big" /></svg><span id="libraryName">Library</span></h2>
-            <button class="btn btn-ghost btn-sm" id="chooseLibraryBtn">Choose library folder</button>
+            <button class="btn btn-ghost btn-sm" id="chooseLibraryBtn">Choose folder</button>
           </div>
           <p class="shelf-hint" id="libraryHint">
             Pick a parent folder once to see all of its folders here, and jump between them with
             <kbd>[</kbd> and <kbd>]</kbd>.
           </p>
-          <div class="cards cards-compact" id="libraryList"></div>
-        </section>
-
-        <footer class="start-foot">
-          <button class="link-btn" id="openHelpBtn">
-            <svg class="icon"><use href="#i-keyboard" /></svg>Shortcuts, features &amp; FAQ
+          <button class="icon-btn rail-scroll" id="libraryUp" title="Scroll up" aria-label="Scroll library up" hidden>
+            <svg class="icon"><use href="#i-chevron-up" /></svg>
           </button>
-          <span aria-hidden="true">·</span>
-          <a href="https://github.com/AbdulDevHub/Lumen-Gallery" target="_blank" rel="noopener">GitHub</a>
-          <span aria-hidden="true">·</span>
-          <span>v<span id="appVersion">2.0.0</span></span>
-        </footer>
+          <div class="rail-list" id="libraryList"></div>
+          <button class="icon-btn rail-scroll" id="libraryDown" title="Scroll down" aria-label="Scroll library down" hidden>
+            <svg class="icon"><use href="#i-chevron-down" /></svg>
+          </button>
+        </aside>
+
+        <div class="start-main">
+          <button type="button" class="dropzone" id="dropzone" title="Open a folder (O)">
+            <svg class="icon icon-xl"><use href="#i-folder-open" /></svg>
+            <span class="dz-title">Drop a folder or images here</span>
+          </button>
+
+          <section class="shelf panel" id="recentSection" hidden aria-labelledby="recentTitle">
+            <div class="shelf-head">
+              <h2 id="recentTitle"><svg class="icon"><use href="#i-history" /></svg>Continue</h2>
+            </div>
+            <div class="cards" id="recentList"></div>
+          </section>
+        </div>
       </section>
 
       <div id="imageContainer" class="image-container one-per-row" aria-label="Gallery"></div>
@@ -382,50 +330,62 @@
         <button role="tab" class="tab" aria-selected="true" data-tab="settings">Settings</button>
         <button role="tab" class="tab" data-tab="shortcuts">Shortcuts</button>
         <button role="tab" class="tab" data-tab="features">Features</button>
-        <button role="tab" class="tab" data-tab="faq">FAQ</button>
-        <button role="tab" class="tab" data-tab="about">About</button>
       </div>
 
       <section class="tab-panel" data-panel="settings" role="tabpanel">
         <form id="settingsForm" class="settings">
-          <label>GIFs in the grid
-            <select name="gifMode">
-              <option value="hover">Play on hover (fastest)</option>
-              <option value="visible">Always play</option>
-              <option value="still">Never play in grid</option>
-            </select>
-          </label>
-          <label>Preview frames per video
-            <select name="videoFrames">
-              <option value="auto">Match images per row</option>
-              <option value="1">1</option>
-              <option value="3">3</option>
-              <option value="6">6</option>
-              <option value="12">12</option>
-            </select>
-          </label>
-          <label>Slideshow speed <output data-for="slideshowSeconds"></output>
-            <input type="range" name="slideshowSeconds" min="1" max="15" step="1" />
-          </label>
-          <label>Auto-scroll speed <output data-for="autoScrollSpeed"></output>
-            <input type="range" name="autoScrollSpeed" min="20" max="800" step="10" />
-          </label>
-          <label>Hide cursor when idle
-            <select name="cursorHideMs">
-              <option value="3000">After 3 seconds</option>
-              <option value="5000">After 5 seconds</option>
-              <option value="10000">After 10 seconds</option>
-              <option value="0">Never</option>
-            </select>
-          </label>
-          <label>Background
-            <select name="background">
-              <option value="charcoal">Charcoal</option>
-              <option value="black">Black</option>
-            </select>
-          </label>
-          <label class="check"><input type="checkbox" name="resumePrompt" /> Offer to resume where I left off</label>
-          <label class="check"><input type="checkbox" name="rememberLayout" /> Remember grid layout between visits</label>
+          <div class="settings-grid">
+            <label><span class="label-row">GIFs in the grid</span>
+              <select name="gifMode">
+                <option value="hover">Play on hover (fastest)</option>
+                <option value="visible">Always play</option>
+                <option value="still">Never play in grid</option>
+              </select>
+            </label>
+            <label><span class="label-row">Preview frames per video</span>
+              <select name="videoFrames">
+                <option value="auto">Match images per row</option>
+                <option value="1">1</option>
+                <option value="3">3</option>
+                <option value="6">6</option>
+                <option value="12">12</option>
+              </select>
+            </label>
+            <label><span class="label-row">Hide cursor when idle</span>
+              <select name="cursorHideMs">
+                <option value="3000">After 3 seconds</option>
+                <option value="5000">After 5 seconds</option>
+                <option value="10000">After 10 seconds</option>
+                <option value="0">Never</option>
+              </select>
+            </label>
+            <label><span class="label-row">Background</span>
+              <select name="background">
+                <option value="charcoal">Charcoal</option>
+                <option value="black">Black</option>
+              </select>
+            </label>
+            <label><span class="label-row">Slideshow speed <output data-for="slideshowSeconds"></output></span>
+              <input type="range" name="slideshowSeconds" min="1" max="15" step="1" />
+            </label>
+            <label><span class="label-row">Auto-scroll speed <output data-for="autoScrollSpeed"></output></span>
+              <input type="range" name="autoScrollSpeed" min="20" max="800" step="10" />
+            </label>
+          </div>
+          <div class="settings-checks">
+            <label class="check"><input type="checkbox" name="resumePrompt" /> Offer to resume where I left off</label>
+            <label class="check"><input type="checkbox" name="rememberLayout" /> Remember grid layout between visits</label>
+          </div>
+          <fieldset class="settings-buttons">
+            <legend>Buttons to show</legend>
+            <label class="check"><input type="checkbox" name="btnFavOnly" /> Favourites only</label>
+            <label class="check"><input type="checkbox" name="btnShuffle" /> Shuffle</label>
+            <label class="check"><input type="checkbox" name="btnSpotlight" /> Hide toolbar</label>
+            <label class="check"><input type="checkbox" name="btnZoom" /> Zoom mode</label>
+            <label class="check"><input type="checkbox" name="btnFav" /> Favourite</label>
+            <label class="check"><input type="checkbox" name="btnInfo" /> Image info</label>
+            <label class="check"><input type="checkbox" name="btnSlideshow" /> Slideshow</label>
+          </fieldset>
           <div class="danger-zone">
             <button type="button" class="btn btn-ghost btn-sm" id="forgetRecentsBtn">Forget recent folders &amp; progress</button>
           </div>
@@ -433,85 +393,45 @@
       </section>
 
       <section class="tab-panel" data-panel="shortcuts" role="tabpanel" hidden>
-        <h3>Keyboard shortcuts</h3>
-        <table class="keys">
-          <tbody>
-            <tr><td><kbd>←</kbd> <kbd>→</kbd></td><td>Previous / next image (opens the viewer)</td></tr>
-            <tr><td><kbd>X</kbd> <kbd>Esc</kbd></td><td>Close the viewer</td></tr>
-            <tr><td><kbd>R</kbd></td><td>Switch between full width and auto size</td></tr>
-            <tr><td><kbd>Z</kbd></td><td>Cycle zoom: off → click to zoom → magnifying lens</td></tr>
-            <tr><td><kbd>S</kbd></td><td>Shuffle on / off</td></tr>
-            <tr><td><kbd>G</kbd></td><td>Toggle gaps between images</td></tr>
-            <tr><td><kbd>H</kbd></td><td>Spotlight: hide the toolbar</td></tr>
-            <tr><td><kbd>F</kbd></td><td>Fullscreen</td></tr>
-            <tr><td><kbd>B</kbd></td><td>Pin the current page of this folder</td></tr>
-            <tr><td><kbd>+</kbd> <kbd>-</kbd></td><td>Widen / narrow the grid</td></tr>
-            <tr><td><kbd>P</kbd></td><td>Start / stop slideshow</td></tr>
-            <tr><td><kbd>I</kbd></td><td>Image info</td></tr>
-            <tr><td><kbd>L</kbd></td><td>Favourite the current image</td></tr>
-            <tr><td><kbd>A</kbd></td><td>Hands-free auto-scroll</td></tr>
-            <tr><td><kbd>,</kbd> <kbd>.</kbd></td><td>Auto-scroll slower / faster</td></tr>
-            <tr><td><kbd>[</kbd> <kbd>]</kbd></td><td>Previous / next folder in your Library</td></tr>
-            <tr><td><kbd>/</kbd></td><td>Filter by file name</td></tr>
-            <tr><td><kbd>O</kbd></td><td>Open a folder</td></tr>
-            <tr><td><kbd>?</kbd></td><td>Show this panel</td></tr>
-          </tbody>
-        </table>
+        <ul class="keys">
+          <li><span><kbd>←</kbd><kbd>→</kbd></span>Previous / next image</li>
+          <li><span><kbd>X</kbd><kbd>Esc</kbd></span>Close the viewer</li>
+          <li><span><kbd>R</kbd></span>Full width / auto size</li>
+          <li><span><kbd>Z</kbd></span>Cycle zoom: off, click, lens</li>
+          <li><span><kbd>S</kbd></span>Shuffle on / off</li>
+          <li><span><kbd>G</kbd></span>Toggle gaps between images</li>
+          <li><span><kbd>H</kbd></span>Spotlight: hide the toolbar</li>
+          <li><span><kbd>F</kbd></span>Fullscreen</li>
+          <li><span><kbd>B</kbd></span>Pin the current page</li>
+          <li><span><kbd>+</kbd><kbd>-</kbd></span>Widen / narrow the grid</li>
+          <li><span><kbd>P</kbd></span>Start / stop slideshow</li>
+          <li><span><kbd>I</kbd></span>Image info</li>
+          <li><span><kbd>L</kbd></span>Favourite the current image</li>
+          <li><span><kbd>A</kbd></span>Hands-free auto-scroll</li>
+          <li><span><kbd>,</kbd><kbd>.</kbd></span>Auto-scroll slower / faster</li>
+          <li><span><kbd>[</kbd><kbd>]</kbd></span>Previous / next Library folder</li>
+          <li><span><kbd>/</kbd></span>Filter by file name</li>
+          <li><span><kbd>O</kbd></span>Open a folder</li>
+          <li><span><kbd>?</kbd></span>Show this panel</li>
+        </ul>
         <p class="muted">Move the mouse to the left edge to reveal the side controls. Swipe left or right in the viewer on touch screens.</p>
       </section>
 
       <section class="tab-panel" data-panel="features" role="tabpanel" hidden>
-        <h3>What Lumen Gallery does</h3>
-        <ul class="feature-list">
-          <li><strong>Recent folders.</strong> Reopen any folder you've viewed in one click and pick up exactly where you stopped.</li>
-          <li><strong>Library.</strong> Point it at a parent folder to see every sub-folder and jump between them with <kbd>[</kbd> <kbd>]</kbd>.</li>
-          <li><strong>Fast with huge folders.</strong> Thousands of images and GIFs scroll smoothly; images far off-screen are released from memory.</li>
-          <li><strong>Flexible grid.</strong> 1, 2, 3, 6, 12 or 24 images per row, adjustable width, gaps on or off, natural or fill width.</li>
-          <li><strong>Focused viewer.</strong> Auto sizing for tall and panoramic images, click zoom, a magnifying lens, a thumbnail strip and image info.</li>
-          <li><strong>Hands-free.</strong> Slideshow with adjustable speed and smooth auto-scroll for long folders.</li>
-          <li><strong>Organise while you browse.</strong> Favourites, filter by name, sort by name, date or size, or shuffle.</li>
-          <li><strong>Videos too.</strong> Videos are turned into evenly spaced preview frames.</li>
-          <li><strong>Private by design.</strong> Everything happens on your device. Nothing is uploaded, ever.</li>
-          <li><strong>Install anywhere.</strong> Use it as a website, install it as an offline app, or add the Chrome extension (<kbd>Alt</kbd>+<kbd>G</kbd>).</li>
-        </ul>
-      </section>
-
-      <section class="tab-panel" data-panel="faq" role="tabpanel" hidden>
-        <h3>Frequently asked questions</h3>
-        <details open>
-          <summary>Are my images uploaded anywhere?</summary>
-          <p>No. Your browser reads the files directly from your device. Nothing is uploaded, there are no accounts and no analytics.</p>
-        </details>
-        <details>
-          <summary>Does Lumen Gallery work offline?</summary>
-          <p>Yes. Install it as an app from your browser's address bar, or use the Chrome extension, and it works without an internet connection.</p>
-        </details>
-        <details>
-          <summary>How do I reopen a folder I viewed before?</summary>
-          <p>Open a folder once with Open folder and it appears under Recent folders. Click it to reopen and continue from where you stopped. Your browser asks once for permission to read the folder.</p>
-        </details>
-        <details>
-          <summary>Can it handle very large folders?</summary>
-          <p>Yes. Folders with thousands of images stay smooth because only images near the screen are kept in memory, and GIFs only play when you hover them (you can change this in Settings).</p>
-        </details>
-        <details>
-          <summary>Which file formats are supported?</summary>
-          <p>Any image your browser can display, including JPEG, PNG, GIF, WebP, AVIF, BMP and SVG. Videos such as MP4 and WebM are shown as evenly spaced preview frames.</p>
-        </details>
-        <details>
-          <summary>Which browsers are supported?</summary>
-          <p>All modern browsers. Recent folders and the Library use the File System Access API, available in Chrome, Edge, Opera, Brave and other Chromium-based browsers.</p>
-        </details>
-      </section>
-
-      <section class="tab-panel" data-panel="about" role="tabpanel" hidden>
-        <h3>About</h3>
-        <p>Lumen Gallery is a free, open-source image and video folder viewer by Abdul Hadi Khan, released under the MIT License.</p>
-        <p>
-          <a href="https://github.com/AbdulDevHub/Lumen-Gallery" target="_blank" rel="noopener">Source code on GitHub</a> ·
-          <a href="https://github.com/AbdulDevHub/Lumen-Gallery/releases/latest" target="_blank" rel="noopener">Download the Chrome extension</a>
-        </p>
-        <p class="muted">Version <span class="app-version">2.0.0</span>. Inter typeface (SIL OFL), Lucide icons (ISC).</p>
+        <div class="feature-grid">
+          <article><svg class="icon"><use href="#i-history" /></svg><h3>Recent folders</h3><p>Reopen any folder in one click and pick up exactly where you stopped.</p></article>
+          <article><svg class="icon"><use href="#i-layout-grid" /></svg><h3>Flexible grid</h3><p>1 to 24 images per row, adjustable width, gaps on or off, natural or fill width.</p></article>
+          <article><svg class="icon"><use href="#i-play" /></svg><h3>Hands-free</h3><p>Slideshow with adjustable speed and smooth auto-scroll for long folders.</p></article>
+          <article><svg class="icon"><use href="#i-star" /></svg><h3>Organise as you browse</h3><p>Favourites, filter by name, sort by name, date or size (either direction), or shuffle.</p></article>
+          <article><svg class="icon"><use href="#i-library-big" /></svg><h3>Library</h3><p>Point it at a parent folder to see every sub-folder and jump between them with <kbd>[</kbd> <kbd>]</kbd>.</p></article>
+          <article><svg class="icon"><use href="#i-sparkles" /></svg><h3>Fast with huge folders</h3><p>Thousands of images and GIFs scroll smoothly; off-screen images are released from memory.</p></article>
+          <article><svg class="icon"><use href="#i-zoom-in" /></svg><h3>Focused viewer</h3><p>Auto sizing for tall and wide images, click zoom, a magnifying lens, thumbnails and image info.</p></article>
+          <article><svg class="icon"><use href="#i-shield-check" /></svg><h3>Private and offline</h3><p>Nothing leaves your device. Use it as a website, an app or a Chrome extension <span class="nowrap">(<kbd>Alt</kbd>+<kbd>G</kbd>)</span>.</p></article>
+        </div>
+        <div class="about-row">
+          <a class="btn btn-ghost btn-sm" href="https://github.com/AbdulDevHub/Lumen-Gallery" target="_blank" rel="noopener">Source on GitHub</a>
+          <a class="btn btn-ghost btn-sm" href="https://github.com/AbdulDevHub/Lumen-Gallery/releases/latest" target="_blank" rel="noopener"><svg class="icon"><use href="#i-download" /></svg>Chrome extension</a>
+        </div>
       </section>
     </dialog>
 

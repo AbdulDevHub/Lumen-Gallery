@@ -18,6 +18,8 @@ export const state = {
 
   // view options
   sort: "name",
+  /** Show the sorted list back to front. */
+  reverse: false,
   isRandomized: false,
   filter: "",
   favOnly: false,

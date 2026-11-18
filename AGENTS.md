@@ -24,12 +24,13 @@ and a GitHub Pages web app/PWA from the same static files (no build step).
 
 ## Conventions & constraints
 - Everything must work offline and inside an extension page: no remote scripts/fonts/CDNs, no inline `<script>` (MV3 CSP). `ld+json` blocks are fine.
-- Shipped files are listed ONCE in `tools/files.mjs`; add new runtime files there or they won't deploy.
+- Shipped files are listed ONCE in `tools/files.mjs`; add new runtime files there or they won't deploy. New `src/` modules also go in the `SHELL` list in `sw.js` (a test enforces it).
 - Service worker / PWA code must stay inert on `chrome-extension:` (see `src/pwa.js`).
 - Never remove or remap existing shortcuts (`x r z s g h f b + = - ← →`); only add new ones in `src/shortcuts.js`.
 - Grid must stay fast for ~4000-image folders with GIFs: keep src windowing + GIF posters in `src/grid.js`.
 - Public copy (README, meta, FAQ, UI) stays neutral: photos, art, image folders. No niche reading-genre wording; `tests/site.spec.mjs` enforces the banned word list.
 - Test images: generated fixtures only (or the user's `OneDrive\Pictures`); public screenshots use generated art only.
+- If `npm test` times out on every page, another app may already be serving port 4173 (`reuseExistingServer`), or the machine is too busy for the default worker count; try `--workers=3`.
 - Commits: gitmoji + conventional type (see the user's `gitmoji-commit` skill).
 
 ## Boundaries

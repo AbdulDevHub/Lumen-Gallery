@@ -162,9 +162,15 @@ test("favourites, favourites-only filter and sort", async ({ page }) => {
   await page.locator("#favOnlyBtn").click()
   await expect(page.locator(".tile")).toHaveCount(1)
   await page.locator("#favOnlyBtn").click()
-  await page.locator("#sortSelect").selectOption("size")
+  await page.locator("#sortBtn").click()
+  await page.getByRole("menuitemradio", { name: "File size" }).click()
+  await expect(page.locator("#sortLabel")).toHaveText("File size")
   const sizes = await page.evaluate(() => window.lumen.state.view.map((i) => i.size))
   expect([...sizes].sort((a, b) => b - a)).toEqual(sizes)
+  await page.locator("#sortBtn").click()
+  await page.getByRole("menuitemcheckbox", { name: "Reverse order" }).click()
+  const reversed = await page.evaluate(() => window.lumen.state.view.map((i) => i.size))
+  expect(reversed).toEqual([...sizes].reverse())
 })
 
 test("slideshow advances and stops", async ({ page }) => {
@@ -175,8 +181,9 @@ test("slideshow advances and stops", async ({ page }) => {
   await expect(page.locator("#overlay")).toHaveClass(/open/)
   await expect(page.locator("#pageInfo")).toHaveValue("2", { timeout: 3000 })
   await page.keyboard.press("p")
+  const stoppedAt = await page.locator("#pageInfo").inputValue()
   await page.waitForTimeout(1300)
-  await expect(page.locator("#pageInfo")).toHaveValue("2")
+  await expect(page.locator("#pageInfo")).toHaveValue(stoppedAt)
 })
 
 test("settings dialog opens with ? and changes GIF mode", async ({ page }) => {
@@ -194,16 +201,17 @@ test("settings dialog opens with ? and changes GIF mode", async ({ page }) => {
 
 test("grid layout is remembered across reloads", async ({ page }) => {
   await openApp(page)
+  await loadBasicFiles(page)
   await page.locator("#gridToggle").click()
   await page.locator("#gridToggle").click()
   await page.reload()
   await expect(page.locator("#gridToggle")).toHaveText("3")
 })
 
-test("clear returns to the start screen", async ({ page }) => {
+test("logo returns to the start screen", async ({ page }) => {
   await openApp(page)
   await loadBasicFiles(page)
-  await page.locator("#clearAll").click()
+  await page.locator("#brandHome").click()
   await expect(page.locator("#startScreen")).toBeVisible()
   await expect(page.locator(".tile")).toHaveCount(0)
 })

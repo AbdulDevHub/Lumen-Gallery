@@ -15,7 +15,7 @@ Reopen recent folders in one click and pick up exactly where you stopped.
 ![Manifest V3](https://img.shields.io/badge/Chrome-Manifest_V3-f3c669?labelColor=1e1c1a)
 ![No dependencies](https://img.shields.io/badge/runtime_dependencies-0-f3c669?labelColor=1e1c1a)
 
-<img src="assets/screenshots/start.png" alt="Lumen Gallery start screen with recent folders and a library of folders" width="900" />
+<img src="assets/screenshots/start.png" alt="Lumen Gallery start screen with a Library column and recent folders" width="900" />
 
 </div>
 
@@ -33,13 +33,14 @@ The same files ship two ways. GitHub Pages serves them as a website you can inst
 | --- | --- |
 | **Recent folders** | Reopen any folder you've viewed in one click. Cards show a thumbnail, how far you got and when you last opened it. |
 | **Resume where you left off** | Your position is saved as you scroll. When you reopen a folder you get a *Resume at 37* button. <kbd>B</kbd> pins a page on purpose. |
-| **Library** | Point it at a parent folder to see every sub-folder with its progress, then jump between neighbouring folders with <kbd>[</kbd> and <kbd>]</kbd>. |
+| **Library** | Point it at a parent folder and its sub-folders appear in a side column with cover previews and progress. Jump between them with <kbd>[</kbd> and <kbd>]</kbd>, or pick one from the folder menu in the toolbar. Folders without images are skipped. |
 | **Built for huge folders** | Thousands of images load in seconds and scroll smoothly. Memory stays flat, and jumping to image 3,000 lands exactly. |
 | **Calm GIFs** | GIFs show a still frame in the grid and play on hover or in the viewer. You can change this in Settings. |
 | **Flexible grid** | 1, 2, 3, 6, 12 or 24 images per row, adjustable width, gaps on/off, and natural or fill width. Your layout is remembered. |
 | **Focused viewer** | Auto sizing for tall and panoramic images, click-to-zoom, a magnifying lens, a thumbnail strip, an image info panel and swipe gestures. |
 | **Hands-free** | A slideshow with adjustable speed, and smooth auto-scroll (<kbd>A</kbd>) for long folders. |
-| **Organise as you browse** | Favourites (<kbd>L</kbd>), filter by file name (<kbd>/</kbd>), sort by name, date or size, or shuffle. |
+| **Organise as you browse** | Favourites (<kbd>L</kbd>), filter by file name (<kbd>/</kbd>), sort by name, date or size in either direction, or shuffle. |
+| **A tidy toolbar** | Buttons you rarely use (shuffle, favourites only, zoom, slideshow and more) can be hidden in Settings; their shortcuts keep working. Click the logo to get back to the start screen. |
 | **Videos** | Videos become evenly spaced preview frames that you can browse like images. |
 | **Private and offline** | No uploads, accounts or analytics. Works without a connection. |
 | **Install anywhere** | Use it as a website, install it as an app (it can open images straight from your OS), or add the Chrome extension (<kbd>Alt</kbd>+<kbd>G</kbd>). |
@@ -50,7 +51,7 @@ The same files ship two ways. GitHub Pages serves them as a website you can inst
 | --- | --- |
 | <img src="assets/screenshots/grid.png" alt="Three-per-row grid of landscape images" /> | <img src="assets/screenshots/viewer.png" alt="Full-screen viewer with info panel and thumbnail strip" /> |
 
-<img src="assets/screenshots/shortcuts.png" alt="Settings and help panel showing keyboard shortcuts" width="720" />
+<img src="assets/screenshots/shortcuts.png" alt="Settings panel showing keyboard shortcuts" width="720" />
 
 ## Get it
 
@@ -87,7 +88,7 @@ Open it from the toolbar icon or with <kbd>Alt</kbd>+<kbd>G</kbd>.
 | <kbd>[</kbd> / <kbd>]</kbd> | Previous / next folder in your Library |
 | <kbd>/</kbd> | Filter by file name |
 | <kbd>O</kbd> | Open a folder |
-| <kbd>?</kbd> | Shortcuts, features and FAQ |
+| <kbd>?</kbd> | Shortcuts and features |
 
 Move the mouse to the left edge to reveal the side controls, or to the bottom edge in the viewer to show the thumbnail strip.
 
@@ -116,7 +117,7 @@ Pushing to `main` deploys the site to GitHub Pages. Pushing a `v*` tag builds th
 
 ```txt
 Lumen-Gallery
-├── index.html            # the whole app (and the SEO/landing content)
+├── index.html            # the whole app (and its SEO metadata)
 ├── src/                  # ES modules: grid, viewer, library, files, settings, …
 ├── styles/               # main, loader and effects CSS
 ├── icons/ assets/        # logo, icons, font, screenshots, OG image

@@ -54,12 +54,14 @@ test("pins and favourites persist per folder", async ({ page }) => {
   await page.keyboard.press("b")
   await expect(page.locator(".toast")).toContainText("Pinned page 3")
   await page.keyboard.press("l")
+  await expect(page.locator(".toast", { hasText: "Added to favourites" })).toBeVisible()
   await page.keyboard.press("x")
 
   await page.reload()
   await page.waitForFunction(() => document.body.classList.contains("ready"))
   await page.locator("#recentList .card-open").first().click()
-  await expect(page.locator(".toast-action", { hasText: "Pinned page 3" })).toBeVisible()
+  // If auto-saved progress is also page 3, the toast offers "Resume at 3" instead of a separate pin button.
+  await expect(page.locator(".toast-action", { hasText: /Pinned page 3|Resume at 3/ })).toBeVisible()
   await expect(page.locator(".tile").nth(2)).toHaveClass(/is-fav/)
 })
 
@@ -96,4 +98,28 @@ test("Library lists sub-folders and [ ] jump between them", async ({ page }) => 
   await page.keyboard.press("[")
   await page.keyboard.press("[")
   await expect(page.locator("#folderName")).toHaveText("Part 1")
+})
+
+test("Library hides folders without images and the folder chip picks a folder", async ({ page }) => {
+  await openApp(page)
+  for (const name of ["Alpha", "Beta", "Gamma"]) {
+    await makeOpfsFolder(page, name, basicUrls(["img 1.png", "img 2.png"]), { parent: "Lib2" })
+  }
+  await page.evaluate(async () => {
+    const lib = window.__dirs.Lib2
+    await lib.getDirectoryHandle("Empty", { create: true })
+    const { db } = await import("/src/db.js")
+    await db.put("kv", lib, "libraryRoot")
+  })
+  await page.reload()
+  await page.waitForFunction(() => document.body.classList.contains("ready"))
+  const cards = page.locator("#libraryList .folder-card")
+  await expect(cards).toHaveText(["Alpha", "Beta", "Gamma"])
+
+  await cards.first().click()
+  await expect(page.locator("#folderName")).toHaveText("Alpha")
+  await page.locator("#folderChip").click()
+  await expect(page.getByRole("menuitemradio")).toHaveText(["Alpha", "Beta", "Gamma"])
+  await page.getByRole("menuitemradio", { name: "Gamma" }).click()
+  await expect(page.locator("#folderName")).toHaveText("Gamma")
 })

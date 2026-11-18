@@ -20,7 +20,7 @@ test("image header sniffing handles JPEG and WebP", async ({ page }) => {
   for (const d of Object.values(dims)) expect(d).toEqual({ w: 321, h: 123 })
 })
 
-test("SEO: head tags, JSON-LD and visible FAQ agree", async ({ page }) => {
+test("SEO: head tags and JSON-LD", async ({ page }) => {
   await openApp(page)
   const title = await page.title()
   expect(title.length).toBeLessThanOrEqual(65)
@@ -32,9 +32,9 @@ test("SEO: head tags, JSON-LD and visible FAQ agree", async ({ page }) => {
   await expect(page.locator("h1")).toHaveCount(1)
 
   const ld = JSON.parse(await page.locator('script[type="application/ld+json"]').textContent())
-  const faq = ld["@graph"].find((n) => n["@type"] === "FAQPage").mainEntity.map((q) => q.name)
-  const visible = await page.locator("[data-panel=faq] summary").allTextContents()
-  expect(visible).toEqual(faq)
+  expect(ld["@graph"].find((n) => n["@type"] === "WebApplication").name).toBe("Lumen Gallery")
+  // FAQ is no longer shown on the page, so it must not be claimed in structured data either.
+  expect(ld["@graph"].some((n) => n["@type"] === "FAQPage")).toBe(false)
 })
 
 // The owner wants the project described neutrally; banned words are stored reversed so they

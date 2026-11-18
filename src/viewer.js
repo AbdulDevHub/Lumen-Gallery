@@ -42,7 +42,7 @@ export function openViewer(index) {
     document.body.classList.add("overlay-open")
     document.body.style.top = `-${savedScroll}px`
     el.overlay.classList.add("open")
-    el.sideMenu.style.display = "block"
+    el.sideMenu.style.display = "flex"
   }
 
   el.image.alt = item.name
@@ -379,15 +379,28 @@ function renderFilmstrip() {
     btn.className = "thumb" + (i === state.currentIndex ? " active" : "")
     btn.dataset.i = i
     btn.title = `${i + 1}. ${item.name}`
+    // Reserve each thumb's width up front (sizes are known from file headers) so the strip
+    // doesn't shift as thumbnails load.
+    if (item.w && item.h) btn.style.width = `${Math.round((THUMB_H * item.w) / item.h)}px`
     const img = document.createElement("img")
     img.alt = ""
     img.decoding = "async"
+    img.addEventListener("load", centerActiveThumb, { once: true })
     btn.appendChild(img)
     thumbFor(item).then((src) => src && (img.src = src))
     buttons.push(btn)
   }
   el.filmstrip.replaceChildren(...buttons)
-  el.filmstrip.querySelector(".active")?.scrollIntoView({ inline: "center", block: "nearest" })
+  centerActiveThumb()
+}
+
+const THUMB_H = 64
+
+/** Keeps the current image in the middle of the strip (the ends simply stop at the edges). */
+function centerActiveThumb() {
+  const strip = el.filmstrip
+  const active = strip.querySelector(".active")
+  if (active) strip.scrollLeft = active.offsetLeft - (strip.clientWidth - active.offsetWidth) / 2
 }
 
 /** Small cached thumbnail (decoded once at ~160px tall) so the strip stays light for big images. */

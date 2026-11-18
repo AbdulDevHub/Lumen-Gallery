@@ -12,6 +12,14 @@ export const DEFAULTS = {
   resumePrompt: true,
   background: "charcoal",
   rememberLayout: true,
+  // Optional buttons (their keyboard shortcuts work either way).
+  btnFavOnly: true,
+  btnShuffle: true,
+  btnSpotlight: true,
+  btnZoom: true,
+  btnFav: true,
+  btnInfo: true,
+  btnSlideshow: true,
   layout: { gridStepIndex: 0, containerWidth: 90, hasGap: true, isForceFillWidth: true, overlayMode: "auto" },
 }
 
@@ -48,4 +56,19 @@ export function storageSet(key, value) {
   } catch {
     /* ignore */
   }
+}
+
+/** Setting key -> id of the optional button it shows or hides. */
+export const OPTIONAL_BUTTONS = {
+  btnFavOnly: "favOnlyBtn",
+  btnShuffle: "randomize",
+  btnSpotlight: "spotlight",
+  btnZoom: "zoomMode",
+  btnFav: "favBtn",
+  btnInfo: "infoBtn",
+  btnSlideshow: "slideshowBtn",
+}
+
+export function applyOptionalButtons() {
+  for (const [key, id] of Object.entries(OPTIONAL_BUTTONS)) document.getElementById(id).hidden = !settings[key]
 }

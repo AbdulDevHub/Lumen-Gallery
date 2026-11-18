@@ -17,10 +17,11 @@ Keep this in sync when you add a module (also add it to `sw.js` SHELL and, if it
 | `files.js` | File filtering, natural sort, items (lazy `url`/`size`/`lastModified`), header size sniffing, video frames |
 | `grid.js` | Tiles, src windowing (IntersectionObserver, 2-screen margin), GIF posters, visible index, layout toggles |
 | `viewer.js` | Overlay: v1 size modes and zoom, page input, filmstrip, info, slideshow, swipe |
-| `library.js` | Picker/permissions, Recents UI, Library, progress/pin/favourite persistence, `[`/`]` siblings, v1 bookmark migration |
+| `library.js` | Picker/permissions, Recents UI, Library (lazy covers, hides image-less folders), folder-menu items, progress/pin/favourite persistence, `[`/`]` siblings, v1 bookmark migration |
 | `reading.js` | Progress bar, auto-scroll |
 | `ui.js` | Toasts, ripple, loader, settings/help dialog |
 | `shortcuts.js` | Key dispatch (ignores inputs and modifier keys) |
+| `menu.js` | Popover menus (sort order, folder picker): positioning, arrow-key navigation, outside-click close |
 | `main.js` | Wiring: loadFiles/clearAll/refreshView, toolbar, drag & drop, spotlight/fullscreen, init |
 
 ## Data flow

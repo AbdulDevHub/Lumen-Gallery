@@ -58,10 +58,10 @@ try {
       { a: album, i },
     )
   }
-  await page.locator("#clearAll").click()
+  await page.locator("#brandHome").click()
   await page.reload()
   await page.waitForFunction(() => document.body.classList.contains("ready"))
-  await page.waitForTimeout(800)
+  await page.waitForTimeout(1500) // let Library covers load
   await page.mouse.move(1430, 890)
   await page.screenshot({ path: `${OUT}/start.png`, fullPage: true })
   await page.evaluate(async () => {
